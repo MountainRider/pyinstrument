@@ -3,3 +3,6 @@ I had to recreate the repository because my git config had the wrong e-mails
 so my commit messages had the wrong information.
 I am composing this message at 2015-06-07 7:45 PM.
 
+I worked from 2015-06-07 9:30 PM to 2015-06-07 10:00 PM. I cleaned up the
+measure_current.py script. I made some improvements to the AgilentE3632A
+class.
