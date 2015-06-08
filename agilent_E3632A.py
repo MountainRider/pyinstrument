@@ -21,6 +21,10 @@ class AgilentE3632A(instrument_base.InstrumentBase):
         else:
             time.sleep(self.command_delay)
 
+    def is_connected(self):
+        result = self.query('*IDN?')
+        return result.startswith('HEWLETT-PACKARD,E3632A,0')
+
     def reset(self):
         self.send('*RST')
         self.command_delay_function(3.0)
@@ -38,7 +42,7 @@ class AgilentE3632A(instrument_base.InstrumentBase):
         self.command_delay_function()
 
     def get_output_state(self):
-        return self.query('output?')
+        return '1' == self.query('output?')
 
     """
     Voltage methods
