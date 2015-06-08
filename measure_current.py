@@ -3,53 +3,58 @@
 import sys
 import time
 
-from agilent_E3632A import AgilentE3632A
+import instrument
+from instrument import AgilentE3632A
 
 def main():
     try:
-        instrument = AgilentE3632A(port='/dev/cu.usbserial', timeout=5)
+        dc_supply = AgilentE3632A(port='/dev/cu.usbserial', timeout=5)
+
+        print "Checking to see if the instrument is connected..."
+        if not dc_supply.is_connected():
+            print "ERROR: Instrument is not connected"
+            sys.exit(1)
 
         print "Putting instrument in remote mode..."
-        instrument.set_remote()
+        dc_supply.set_remote()
 
         print "Resetting instrument..."
-        instrument.reset()
+        dc_supply.reset()
 
         print "Setting voltage protection level..."
-        instrument.set_voltage_protection_level(3.5)
+        dc_supply.set_voltage_protection_level(3.5)
 
         print "Setting voltage protection state..."
-        instrument.set_voltage_protection_state('ON')
+        dc_supply.set_voltage_protection_state('ON')
 
         print "Setting current protection level..."
-        instrument.set_current_protection_level(2.0)
+        dc_supply.set_current_protection_level(2.0)
 
         print "Setting current protection state..."
-        instrument.set_current_protection_state('ON')
+        dc_supply.set_current_protection_state('ON')
 
         print "Setting voltage..."
-        instrument.set_voltage(3.0)
+        dc_supply.set_voltage(3.0)
 
         print "Getting output state..."
-        result = instrument.get_output_state()
-        if '1' != result:
+        if not dc_supply.get_output_state():
             print "Setting output state to ON..."
-            instrument.set_output_state('ON')
+            dc_supply.set_output_state(instrument.ON)
             print "Getting output state..."
-            result = instrument.get_output_state()
-            if '1' != result:
+            if not dc_supply.get_output_state():
                 print "ERROR: Could not set output state to ON"
                 sys.exit(1)
 
         print "Getting current level..."
         while True:
-            print instrument.measure_current()
+            print dc_supply.measure_current()
 
     except KeyboardInterrupt:
         print "Exiting due to keyboard interrupt"
-        instrument.readline()
-        instrument.set_local()
-        instrument.close()
+        dc_supply.readline()
+        dc_supply.set_output_state(instrument.OFF)
+        dc_supply.set_local()
+        dc_supply.close()
 
 
 if __name__ == '__main__':
